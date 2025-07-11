@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Title</title>
+    <script src="http://static.geetest.com/v4/gt4.js"></script>
+    <script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.js"></script>
+    <style>body {
+        margin: 50px 0;
+        font-family: "Open Sans", Arial, sans-serif;
+        text-align: center;
+    }
+
+    .inp {
+        width: 278px;
+        height: 40px;
+        padding: 0 10px;
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        font-size: 18px;
+    }
+
+    .btn {
+        display: inline-block;
+        width: 100px;
+        height: 40px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        background: white linear-gradient(180deg, #fff 0%, #f3f3f3 100%);
+        border-radius: 2px;
+        color: #666;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 40px;
+    }
+
+    .btn:hover {
+        background: white linear-gradient(0deg, #fff 0%, #f3f3f3 100%);
+    }
+
+    #captcha {
+        display: inline-block;
+        width: 300px;
+        height: 50px;
+    }
+
+    label {
+        display: inline-block;
+        width: 80px;
+        text-align: right;
+        vertical-align: top;
+    }
+
+    #wait {
+        margin: 0;
+        color: #666;
+        text-align: left;
+    }</style>
+</head>
+<body><h1>demo</h1>
+
+<form id="form">
+    <div><label for="username">Username：</label> <input class="inp" id="username" value="nome"></div>
+    <br>
+    <div><label for="password">Password：</label> <input class="inp" id="password" type="password" value="123456"></div>
+    <br>
+    <div><label for="btn">Plugins：</label>
+        <div id="captcha">
+            <div id="btn" class="btn">captcha</div>
+        </div>
+        <br></div>
+    <br>
+    <div id="reset">
+        <button id="reset_btn" class="btn">Reset</button>
+    </div>
+    <br>
+</form>
+
+<script>
+    var captchaId = "a54eb6509b823f5200484ec985b482d6"
+    var product = "float"
+        if (product !== 'bind') {
+        $('#btn').remove();
+    }
+
+    initGeetest4({
+        captchaId: captchaId,
+        product: product,
+    }, function (gt) {
+        window.gt = gt
+        gt
+            .appendTo("#captcha")
+            .onSuccess(function (e) {
+                var result = gt.getValidate();
+                console.log(result);
+
+                fetch('/api/rain/join', {
+                    method: 'POST',  // Specify POST request
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(result)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.result);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+            })
+
+        $('#btn').click(function () {
+            gt.showBox();
+        })
+        $('#reset_btn').click(function () {
+            gt.reset();
+        })
+    });
+
+</script>
+<script></script>
+</body>
+</html>
